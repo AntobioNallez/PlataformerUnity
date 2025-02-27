@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class JugadorScript : MonoBehaviour
 {
     public Rigidbody2D rb;
+    bool isFacingRight = false;
 
     [Header("Movimiento")]
     public float moveSpeed = 5f;
@@ -39,6 +40,7 @@ public class JugadorScript : MonoBehaviour
         rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
         GroundCheck();
         Gravedad();
+        Flip();
     }
 
     public void Mover(InputAction.CallbackContext context)
@@ -74,6 +76,14 @@ public class JugadorScript : MonoBehaviour
         else
         {
             rb.gravityScale = gravedadBase;
+        }
+    }
+
+    private void Flip() {
+        if(isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0) {
+            isFacingRight = !isFacingRight;
+            Vector3 ls = transform.localScale;
+            ls.x = -1f;
         }
     }
 
