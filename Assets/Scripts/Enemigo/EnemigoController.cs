@@ -14,12 +14,24 @@ public class EnemigoController : MonoBehaviour
     private bool shouldJump;
 
     public int damage = 1;
-    
+    [Header("Vida")]
+    public int maxHealth = 3;
+    private int currentHealth;
+    [Header("Color")]
+    private SpriteRenderer spriteRenderer;
+    private Color ogColor;
+
+    [Header("Loot Table")]
+    public List<LootItem> lootTable = new();
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindWithTag("Player").GetComponent<Transform>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        currentHealth = maxHealth;
+        ogColor = spriteRenderer.color;
     }
 
     // Update is called once per frame
@@ -31,7 +43,7 @@ public class EnemigoController : MonoBehaviour
 
         bool isPlayerAbove = Physics2D.Raycast(transform.position, Vector2.up, 5f, 1 << player.gameObject.layer);
 
-        if ( isGrounded)
+        if (isGrounded)
         {
             rb.velocity = new Vector2(direction * chaseSpeed, rb.velocity.y);
 
@@ -41,9 +53,12 @@ public class EnemigoController : MonoBehaviour
 
             RaycastHit2D platformAbove = Physics2D.Raycast(transform.position, Vector2.up, 3f, groundLayer);
 
-            if(!groundInFront.collider && !gapAhead.collider) {
+            if (!groundInFront.collider && !gapAhead.collider)
+            {
                 shouldJump = true;
-            } else if (isPlayerAbove && platformAbove.collider) {
+            }
+            else if (isPlayerAbove && platformAbove.collider)
+            {
                 shouldJump = true;
             }
         }
@@ -51,12 +66,52 @@ public class EnemigoController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(isGrounded && shouldJump) {
+        if (isGrounded && shouldJump)
+        {
             shouldJump = false;
             Vector2 direction = (player.position - transform.position).normalized;
             Vector2 jumpDirection = direction * jumpForce;
 
             rb.AddForce(new Vector2(jumpDirection.x, jumpForce), ForceMode2D.Impulse);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        StartCoroutine(FlashWhite());
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private IEnumerator FlashWhite()
+    {
+        spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.2f);
+        spriteRenderer.color = ogColor;
+    }
+
+    void Die()
+    {
+        foreach (LootItem lootItem in lootTable)
+        {
+            if (Random.Range(0f, 100f) <= lootItem.dropChance)
+            {
+                InstantiateLoot(lootItem.itemPrefab);
+            }
+            break;
+        }
+        Destroy(gameObject);
+    }
+
+    void InstantiateLoot(GameObject loot)
+    {
+        if (loot)
+        {
+            GameObject droppedLoot = Instantiate(loot, transform.position, Quaternion.identity);
+            droppedLoot.GetComponent<SpriteRenderer>().color = Color.red;
         }
     }
 }

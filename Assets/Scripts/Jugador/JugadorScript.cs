@@ -9,10 +9,21 @@ public class JugadorScript : MonoBehaviour
     public Animator animator;
     bool isFacingRight = true;
     public ParticleSystem efectoAndar;
+    public ParticleSystem efectoSpeedBoost;
+    BoxCollider2D playerCollider;
 
     [Header("Movimiento")]
     public float moveSpeed = 5f;
     float horizontalMovement;
+    float speedMultiplier = 1f;
+
+    // [Header("Dash")]
+    // public float dashSpeed = 20f;
+    // public float dashDuration = 0.1f;
+    // public float dashCooldown = 0.1f;
+    // bool isDashing;
+    // bool canDash = true;
+    TrailRenderer trailRenderer;
 
     [Header("Doble Salto")]
     public float jumpPower = 3f;
@@ -24,6 +35,7 @@ public class JugadorScript : MonoBehaviour
     public Vector2 groundCheckSize = new(0.5f, 0.04f);
     public LayerMask groundLayer;
     bool isGrounded;
+    bool isOnPlatform;
 
     //TODO FINALIZAR EL SALTO DE PARED
     [Header("Wall Check")]
@@ -47,10 +59,17 @@ public class JugadorScript : MonoBehaviour
     // float wallJumpTimer;
     // public Vector2 wallJumpPower = new(5f, 10f);
 
+    void Start()
+    {
+        trailRenderer = GetComponent<TrailRenderer>();
+        playerCollider = GetComponent<BoxCollider2D>();
+        SpeedItem.OnSpeedCollected += SpeedBoost;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(horizontalMovement * moveSpeed * speedMultiplier, rb.velocity.y);
         GroundCheck();
         Gravedad();
         DeslizamientoPared();
@@ -59,15 +78,82 @@ public class JugadorScript : MonoBehaviour
         // if (!isWallJumping)
         // {
         Flip();
-        // }
         animator.SetFloat("yVelocity", rb.velocity.y);
         animator.SetFloat("magnitude", rb.velocity.magnitude);
+        // }
+    }
+
+    void SpeedBoost(float multiplier) {
+        StartCoroutine(SpeedBoostCoroutine(multiplier));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float multiplier) {
+        speedMultiplier = multiplier;
+        efectoSpeedBoost.Play();
+        yield return new WaitForSeconds(1f);
+        speedMultiplier = 1f;
+        efectoSpeedBoost.Stop();
     }
 
     public void Mover(InputAction.CallbackContext context)
     {
         horizontalMovement = context.ReadValue<Vector2>().x;
     }
+
+    // public void Dash(InputAction.CallbackContext context)
+    // {
+    //     if (context.performed && canDash)
+    //     {
+    //         StartCoroutine(DashCoroutine());
+    //     }
+    // }
+
+    public void Drop(InputAction.CallbackContext context) {
+        if(context.performed && isGrounded && isOnPlatform && playerCollider.enabled) {
+            StartCoroutine(DisablePlayerCollider(0.3f));
+        }
+    }
+
+    private IEnumerator DisablePlayerCollider(float disableTime) {
+        playerCollider.enabled = false;
+        yield return new WaitForSeconds(disableTime);
+        playerCollider.enabled = true;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Platform")) {
+            isOnPlatform = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Platform")) {
+            isOnPlatform = false;
+        }
+    }
+
+    // private IEnumerator DashCoroutine()
+    // {
+    //     canDash = false;
+    //     isDashing = true;
+    //     trailRenderer.emitting = true;
+
+    //     float dashDirection = isFacingRight ? 1f : -1f;
+
+    //     rb.velocity = new(dashDirection * dashSpeed, rb.velocity.y);
+
+    //     yield return new WaitForSeconds(dashDuration);
+
+    //     rb.velocity = new(0f, rb.velocity.y);
+
+    //     isDashing = false;
+    //     trailRenderer.emitting = false;
+
+    //     yield return new WaitForSeconds(dashCooldown);
+    //     canDash = true;
+    // }
 
     public void Salto(InputAction.CallbackContext context)
     {
@@ -165,6 +251,7 @@ public class JugadorScript : MonoBehaviour
             Vector3 ls = transform.localScale;
             ls.x *= -1f;
             transform.localScale = ls;
+            efectoSpeedBoost.transform.localScale = ls;
 
             if (rb.velocity.y == 0)
             {

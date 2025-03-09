@@ -10,6 +10,7 @@ public class Gema : MonoBehaviour, IItem
     public void Collect()
     {
         OnGemCollect.Invoke(valor);
+        SoundEffectManager.Play("Gema");
         Destroy(gameObject);
     }
 }

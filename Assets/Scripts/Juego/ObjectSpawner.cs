@@ -16,14 +16,15 @@ public class ObjectSpawner : MonoBehaviour
     public float gemLifeTime = 10f;
     public float spawnInterval = 0.5f;
 
-    public List<Vector3> validSpawnPositions = new List<Vector3>();
-    private List<GameObject> spawnObjects = new List<GameObject>();
+    public List<Vector3> validSpawnPositions = new();
+    private List<GameObject> spawnObjects = new();
     private bool isSpawning = false;
     // Start is called before the first frame update
     void Start()
     {
         GatherValidPosition();
         StartCoroutine(SpawnObjectsIfNeeded());
+        GameController.OnReset += LevelChange;
         //Spawn Objects
     }
 
