@@ -40,6 +40,10 @@ public class MusicManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Establece el nivel de la musica de fondo
+    /// </summary>
+    /// <param name="volume">Volumen de la musica de fondo</param>
     public static void SetVolume(float volume)
     {
         if (Instance != null && Instance.audioSource != null)
@@ -48,6 +52,11 @@ public class MusicManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Empieza a reproducir la música de fondo
+    /// </summary>
+    /// <param name="resetSong">Boolean para determinar si debe de empezar de cero la cancion</param>
+    /// <param name="audioClip">Clip de audio a reproducir</param>
     public static void PlayBackgroundMusic(bool resetSong, AudioClip audioClip = null)
     {
         if (audioClip != null)

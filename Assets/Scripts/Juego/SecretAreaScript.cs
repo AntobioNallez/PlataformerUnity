@@ -17,6 +17,11 @@ public class SecretAreaScript : MonoBehaviour
         hiddenColour = spriteRenderer.color;
     }
 
+    /// <summary>
+    /// Cuando el jugador entra en contacto con el area el efecto de "invisibilidad" se deshace revalando la zona
+    /// Este efecto se ha logrado creando un fondo igual al del juego y escondiendo cosas detras
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -29,6 +34,10 @@ public class SecretAreaScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Al salir la pared invisible vuelve a ocultarse
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -49,6 +58,9 @@ public class SecretAreaScript : MonoBehaviour
 
         while (timeFading < fadeDuration)
         {
+            //El color pase a ser del color inicial al color objetivo
+            //En este caso el color inicial es el "invisible"
+            //Y el color objetivo es aquel que permita ver dentro
             spriteRenderer.color = Color.Lerp(startColor, targetColor, timeFading / fadeDuration);
             timeFading += Time.deltaTime;
             yield return null;

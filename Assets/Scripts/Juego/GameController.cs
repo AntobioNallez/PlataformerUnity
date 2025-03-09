@@ -32,6 +32,9 @@ public class GameController : MonoBehaviour
         gameOverScreen.SetActive(false);
     }
 
+    /// <summary>
+    /// Detiene el juego y muestra la pantalla de fin indicando cuantos niveles sobrevivio
+    /// </summary>
     void GameOverScreen()
     {
         gameOverScreen.SetActive(true);
@@ -41,6 +44,9 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0;
     }
 
+    /// <summary>
+    /// Devuelve el juego a su estado original y hace que las cosas vuelvan a moverse
+    /// </summary>
     public void ResetGame()
     {
         gameOverScreen.SetActive(false);
@@ -51,6 +57,11 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    /// <summary>
+    /// Carga un nivel
+    /// </summary>
+    /// <param name="level">Nivel a cargar</param>
+    /// <param name="wantSurvivedIncrease">Indica si debe aumentarse la cantidad de niveles sobrevividos, puede ser false en caso de reset del juego</param>
     void LoadLevel(int level, bool wantSurvivedIncrease) {
         LoadCanvas.SetActive(false);
 
@@ -65,6 +76,11 @@ public class GameController : MonoBehaviour
         if(wantSurvivedIncrease) survivedLevelsCount++;
     }
 
+    /// <summary>
+    /// Incrementa el valor de la barra de progreso del juego
+    /// Al llegar al tope habilita la posibilidad de cambiar de nivel
+    /// </summary>
+    /// <param name="amount"></param>
     void IncreaseProgressAmmount(int amount)
     {
         progressAmmount += amount;
@@ -77,6 +93,9 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Carga el siguiente nivel, en caso de no haber más niveles volvera al nivel de inicio
+    /// </summary>
     void LoadNextLevel()
     {
         int nextLevelIndex = (currentLevelIndex == levels.Count - 1) ? 0 : currentLevelIndex + 1;

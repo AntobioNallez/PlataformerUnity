@@ -19,6 +19,7 @@ public class SoundEffectManager : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
             soundEffectLibrary = GetComponent<SoundEffectLibrary>();
             DontDestroyOnLoad(gameObject);
+            SetVolume(sfxSlider.value);
         }
         else
         {

@@ -9,6 +9,9 @@ public class StartMenuController : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
     }
 
+    /// <summary>
+    /// #if y #end if son variables que maneja unity
+    /// </summary>
     public void OnExitClick() {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

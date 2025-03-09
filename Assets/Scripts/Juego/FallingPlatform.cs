@@ -22,6 +22,10 @@ public class FallingPlatform : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Después de que el jugador toque la plataforma, esta se caera y más tarde destruira 
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Fall() {
         isFalling = true;
         yield return new WaitForSeconds(fallWait);

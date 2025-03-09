@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class JugadorScript : MonoBehaviour
     bool isFacingRight = true;
     public ParticleSystem efectoAndar;
     public ParticleSystem efectoSpeedBoost;
+    public bool llave = false;
+    public static event Action<int> DeathBarrier;
     BoxCollider2D playerCollider;
 
     [Header("Movimiento")]
@@ -83,11 +86,13 @@ public class JugadorScript : MonoBehaviour
         // }
     }
 
-    void SpeedBoost(float multiplier) {
+    void SpeedBoost(float multiplier)
+    {
         StartCoroutine(SpeedBoostCoroutine(multiplier));
     }
 
-    private IEnumerator SpeedBoostCoroutine(float multiplier) {
+    private IEnumerator SpeedBoostCoroutine(float multiplier)
+    {
         speedMultiplier = multiplier;
         efectoSpeedBoost.Play();
         yield return new WaitForSeconds(1f);
@@ -108,13 +113,16 @@ public class JugadorScript : MonoBehaviour
     //     }
     // }
 
-    public void Drop(InputAction.CallbackContext context) {
-        if(context.performed && isGrounded && isOnPlatform && playerCollider.enabled) {
+    public void Drop(InputAction.CallbackContext context)
+    {
+        if (context.performed && isGrounded && isOnPlatform && playerCollider.enabled)
+        {
             StartCoroutine(DisablePlayerCollider(0.3f));
         }
     }
 
-    private IEnumerator DisablePlayerCollider(float disableTime) {
+    private IEnumerator DisablePlayerCollider(float disableTime)
+    {
         playerCollider.enabled = false;
         yield return new WaitForSeconds(disableTime);
         playerCollider.enabled = true;
@@ -122,14 +130,16 @@ public class JugadorScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Platform")) {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
             isOnPlatform = true;
         }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Platform")) {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
             isOnPlatform = false;
         }
     }
@@ -205,6 +215,24 @@ public class JugadorScript : MonoBehaviour
         {
             rb.gravityScale = gravedadBase;
         }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("DeathBarrier"))
+        {
+            ResetPosicion();
+        }
+        else if (collision.gameObject.CompareTag("Llave"))
+        {
+            llave = true;
+        }
+    }
+
+    public void ResetPosicion()
+    {
+        DeathBarrier.Invoke(1);
+        gameObject.transform.position = new(0, 0, 0);
     }
 
     private void DeslizamientoPared()

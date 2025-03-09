@@ -29,6 +29,10 @@ public class HoldToLoadLevel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Mientras este pulsada la letra E en este caso la variable isHolding sera true
+    /// </summary>
+    /// <param name="context"></param>
     public void OnHold(InputAction.CallbackContext context)
     {
         if (context.started)

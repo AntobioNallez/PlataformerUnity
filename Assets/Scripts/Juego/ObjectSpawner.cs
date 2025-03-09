@@ -42,6 +42,9 @@ public class ObjectSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Encuentra todas las plataformas en los tilemap y se deshace de los items del nivel pasado
+    /// </summary>
     private void LevelChange()
     {
         tilemap = GameObject.Find("Plataformas").GetComponent<Tilemap>();
@@ -50,6 +53,11 @@ public class ObjectSpawner : MonoBehaviour
         DestroyAllSpawnedObjects();
     }
 
+
+    /// <summary>
+    /// Cantidad de items activos
+    /// </summary>
+    /// <returns>Número de items activos en el nivel actual</returns>
     private int ActiveObjectCount()
     {
         spawnObjects.RemoveAll(item => item == null);
@@ -139,6 +147,9 @@ public class ObjectSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Elimina todos los objetos generados en ese nivel
+    /// </summary>
     private void DestroyAllSpawnedObjects()
     {
         foreach (GameObject obj in spawnObjects)
@@ -151,6 +162,9 @@ public class ObjectSpawner : MonoBehaviour
         spawnObjects.Clear();
     }
 
+    /// <summary>
+    /// Consigue todas las posiciones validas donde un objeto puedo spawnear
+    /// </summary>
     private void GatherValidPosition()
     {
         validSpawnPositions.Clear();

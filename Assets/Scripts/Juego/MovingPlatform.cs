@@ -21,21 +21,32 @@ public class MovingPlatform : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(transform.position, nextPosition, moveSpeed * Time.deltaTime);
 
-        if(transform.position == nextPosition) {
+        if (transform.position == nextPosition)
+        {
             nextPosition = (nextPosition == pointA.position) ? pointB.position : pointA.position;
         }
     }
 
+    /// <summary>
+    /// Convierto al jugador en un "hijo" del objeto plataforma para que ambos se muevan y el jugador no se caiga
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Player")) {
+        if (collision.gameObject.CompareTag("Player"))
+        {
             collision.gameObject.transform.parent = transform;
         }
     }
 
+    /// <summary>
+    /// Al salir de la plataforma el jugador deja de ser parte de la plataforma
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Player")) {
+        if (collision.gameObject.CompareTag("Player"))
+        {
             collision.gameObject.transform.parent = null;
         }
     }

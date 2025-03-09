@@ -76,6 +76,10 @@ public class EnemigoController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Metodo que recibe una cantidad de daño recibido
+    /// </summary>
+    /// <param name="damage">Daño recibido</param>
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
@@ -86,6 +90,10 @@ public class EnemigoController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// El enemigo se vuelve de color blanco tras haber recibido un golpe
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator FlashWhite()
     {
         spriteRenderer.color = Color.white;
@@ -93,6 +101,9 @@ public class EnemigoController : MonoBehaviour
         spriteRenderer.color = ogColor;
     }
 
+    /// <summary>
+    /// El enemigo se destruye y hay una posibilidad de obtener materiales de su pool de items
+    /// </summary>
     void Die()
     {
         foreach (LootItem lootItem in lootTable)

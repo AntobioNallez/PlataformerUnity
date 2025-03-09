@@ -18,6 +18,7 @@ public class PlayerHealth : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         GameController.OnReset += ResetHealth;
         HealthItem.OnHealthCollect += Heal;
+        JugadorScript.DeathBarrier += TakeDamage;
     }
 
     void ResetHealth()
